@@ -17,7 +17,11 @@ int main()
         uint64_t newNum;
         inputfile >> newNum;
         Factorization factor;
-        outputfile << factor.GetFactorizationString(newNum);
-        outputfile << endl;
+        if (factor.IsSimple(newNum))
+            outputfile << "It's a prime number" << endl;
+        else {
+            outputfile << factor.GetFactorizationString(newNum);
+            outputfile << endl;
+        }
     }
 }
