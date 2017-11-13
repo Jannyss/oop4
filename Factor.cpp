@@ -14,44 +14,56 @@ Factorization::Factorization() {}
 Factorization::~Factorization() {}
 
 uint64_t Factorization::PollandAlgorithm(uint64_t number) {
-    uint64_t x = rand() %(number-3) +1;
-    uint64_t y = 1;
-    uint64_t i = 0;
-    uint64_t stage = 2;
-    while (GCD(number, abs(x - y)) == 1){
-        if (i == stage) {
-            y = x;
-            stage = stage * 2;
-        }
-        x = (x * x - 1) % number;
-        i++;
+    if (number == 1) return number;
+    if (number % 2 == 0) return 2;
+    uint64_t x = (rand() %(number-2))+2;
+    uint64_t y = x;
+    uint64_t c = (rand() %(number-1))+1;
+    uint64_t d = 1;
+    while (d == 1){
+        x = (ModularPow(x, 2, number) + c + number)%number;
+        y = (ModularPow(y, 2, number) + c + number)%number;
+        y = (ModularPow(y, 2, number) + c + number)%number;
+
+        d = GCD(abs(x-y), number);
+        if (d == number) return PollandAlgorithm(number);
     }
-    return GCD(number, abs(x - y));
+    return d;
+}
+
+uint64_t Factorization::ModularPow(uint64_t base, int exponent, uint64_t modulus)
+{
+    uint64_t result = 1;
+    while (exponent > 0)
+    {
+        if (exponent & 1){
+            result = (result * base) % modulus;
+        }
+        exponent = exponent >> 1;
+        base = (base * base) % modulus;
+    }
+    return result;
 }
 
 
 void Factorization::CalculateFactorization(uint64_t number) {
-    if (IsSimple(number)) cout << "simple";
+    uint64_t pol = PollandAlgorithm(number);
+    uint64_t newNumber = number / pol;
+    if ((IsSimple(pol)) && (pol != 1)) multipliers.push_back(pol);
     else {
-        uint64_t pol = PollandAlgorithm(number);
-        uint64_t newNumber = number / pol;
-        if ((IsSimple(pol)) && (pol != 1)) multipliers.push_back(pol);
-        else {
-            CalculateFactorization(pol);
-        }
-        if (!IsSimple(newNumber)) {
-            CalculateFactorization(newNumber);
-        }
-        else {
-            if (newNumber != 1) multipliers.push_back(newNumber);
-        }
+        CalculateFactorization(pol);
     }
-
+    if (!IsSimple(newNumber)) {
+        CalculateFactorization(newNumber);
+    }
+    else {
+        if (newNumber != 1) multipliers.push_back(newNumber);
+    }
 }
 
 
 bool Factorization::IsSimple(uint64_t number) {
-    for (auto i = 2; i < number / 2; i++) {
+    for (auto i = 2; i <= number / 2; i++) {
         if ((number % i) == 0) return false;
     }
     return true;
