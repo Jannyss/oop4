@@ -31,9 +31,11 @@ private:
 
     mutable std::vector <uint64_t> multipliers;
 
-    uint64_t PollandAlgorithm(uint64_t number);
+    uint64_t PollardAlgorithm(uint64_t number);
 
     uint64_t GCD(uint64_t num1, uint64_t num2);
+
+    uint64_t ModularPow(uint64_t base, int exponent, uint64_t modulus);
 
     void CleaningFactor() {
         multipliers.clear();

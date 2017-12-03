@@ -13,7 +13,7 @@ Factorization::Factorization() {}
 
 Factorization::~Factorization() {}
 
-uint64_t Factorization::PollandAlgorithm(uint64_t number) {
+uint64_t Factorization::PollardAlgorithm(uint64_t number) {
     if (number == 1) return number;
     if (number % 2 == 0) return 2;
     uint64_t x = (rand() %(number-2))+2;
@@ -26,7 +26,7 @@ uint64_t Factorization::PollandAlgorithm(uint64_t number) {
         y = (ModularPow(y, 2, number) + c + number)%number;
 
         d = GCD(abs(x-y), number);
-        if (d == number) return PollandAlgorithm(number);
+        if (d == number) return PollardAlgorithm(number);
     }
     return d;
 }
@@ -47,7 +47,7 @@ uint64_t Factorization::ModularPow(uint64_t base, int exponent, uint64_t modulus
 
 
 void Factorization::CalculateFactorization(uint64_t number) {
-    uint64_t pol = PollandAlgorithm(number);
+    uint64_t pol = PollardAlgorithm(number);
     uint64_t newNumber = number / pol;
     if ((IsSimple(pol)) && (pol != 1)) multipliers.push_back(pol);
     else {
